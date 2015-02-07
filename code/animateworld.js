@@ -7,15 +7,24 @@
 
   function Animated(world) {
     this.world = world;
+    this.turns = 0;
+    this.palntsExtinct = false;
+    this.herbivoresExtinct = false;
+    this.carnivoresExtinct = false;
     var outer = (window.__sandbox ? window.__sandbox.output.div : document.body), doc = outer.ownerDocument;
     var node = outer.appendChild(doc.createElement("div"));
     node.style.cssText = "position: relative; width: intrinsic; width: fit-content;";
     this.pre = node.appendChild(doc.createElement("pre"));
     this.pre.appendChild(doc.createTextNode(world.toString()));
     this.button = node.appendChild(doc.createElement("div"));
-    this.button.style.cssText = "position: absolute; bottom: 8px; right: -4.5em; color: white; font-family: tahoma, arial; " +
+    this.button.style.cssText = "color: white;" +
       "background: #4ab; cursor: pointer; border-radius: 18px; font-size: 70%; width: 3.5em; text-align: center;";
     this.button.innerHTML = "stop";
+
+    this.turnsCont = node.appendChild(doc.createElement("div"));
+    this.turnsCont.appendChild(doc.createTextNode("Turns: " + this.turns));
+    this.messagesCont = node.appendChild(doc.createElement("div"));
+
     var self = this;
     this.button.addEventListener("click", function() { self.clicked(); });
     this.disabled = false;
@@ -39,8 +48,22 @@
 
   Animated.prototype.tick = function() {
     this.world.turn();
+    this.turns += 1;
+    this.turnsCont.innerHTML = 'Turns: '+ this.turns ;
+
+    var mapStr = this.world.toString();
+
+    if(mapStr.indexOf('*') == -1 && !this.palntsExtinct) {
+        this.messagesCont.innerHTML += "<br>Plants are extinct. Turn " + this.turns;
+        this.palntsExtinct = true;
+    }
+    if(mapStr.indexOf('O') == -1 && !this.herbivoresExtinct){
+        this.messagesCont.innerHTML += "<br>Herbivores are extinct. Turn " + this.turns;
+        this.herbivoresExtinct = true;
+    }
+
     this.pre.removeChild(this.pre.firstChild);
-    this.pre.appendChild(this.pre.ownerDocument.createTextNode(this.world.toString()));
+    this.pre.appendChild(this.pre.ownerDocument.createTextNode(mapStr));
   };
 
   Animated.prototype.disable = function() {
