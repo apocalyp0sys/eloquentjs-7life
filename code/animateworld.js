@@ -5,7 +5,8 @@
 
   var active = null;
 
-  function Animated(world) {
+  function Animated(world, speed) {
+    this.speed = speed || 333;
     this.world = world;
     this.turns = 0;
     this.palntsExtinct = false;
@@ -20,6 +21,13 @@
     this.button.style.cssText = "color: white;" +
       "background: #4ab; cursor: pointer; border-radius: 18px; font-size: 70%; width: 3.5em; text-align: center;";
     this.button.innerHTML = "stop";
+    node.appendChild(doc.createTextNode('Speed: '));
+      this.slider = node.appendChild(doc.createElement("input"));
+      this.slider.type = 'range';
+      this.slider.min = 1;
+      this.slider.max = 10;
+      this.slider.style.cssText = 'height:1em;';
+
 
     this.turnsCont = node.appendChild(doc.createElement("div"));
     this.turnsCont.appendChild(doc.createTextNode("Turns: " + this.turns));
@@ -30,7 +38,7 @@
     this.disabled = false;
     if (active) active.disable();
     active = this;
-    this.interval = setInterval(function() { self.tick(); }, 333);
+    this.interval = setTimeout(function() { self.tick(); }, (11 - this.slider.value) * 60 || 333);
   }
 
   Animated.prototype.clicked = function() {
@@ -41,7 +49,7 @@
       this.button.innerHTML = "start";
     } else {
       var self = this;
-      this.interval = setInterval(function() { self.tick(); }, 333);
+      this.interval = setTimeout(function() { self.tick(); }, (11 - this.slider.value) * 60 || 333);
       this.button.innerHTML = "stop";
     }
   };
@@ -68,6 +76,9 @@
 
     this.pre.removeChild(this.pre.firstChild);
     this.pre.appendChild(this.pre.ownerDocument.createTextNode(mapStr));
+
+    var self = this;
+    this.interval = setTimeout(function() { self.tick(); }, (11 - this.slider.value) * 60 || 333);
   };
 
   Animated.prototype.disable = function() {
