@@ -61,6 +61,10 @@
         this.messagesCont.innerHTML += "<br>Herbivores are extinct. Turn " + this.turns;
         this.herbivoresExtinct = true;
     }
+    if(mapStr.indexOf('@') == -1 && !this.carnivoresExtinct){
+          this.messagesCont.innerHTML += "<br>Carnivores are extinct. Turn " + this.turns;
+          this.carnivoresExtinct = true;
+    }
 
     this.pre.removeChild(this.pre.firstChild);
     this.pre.appendChild(this.pre.ownerDocument.createTextNode(mapStr));
