@@ -15,8 +15,23 @@
     var outer = (window.__sandbox ? window.__sandbox.output.div : document.body), doc = outer.ownerDocument;
     var node = outer.appendChild(doc.createElement("div"));
     node.style.cssText = "position: relative; width: intrinsic; width: fit-content;";
-    this.pre = node.appendChild(doc.createElement("pre"));
-    this.pre.appendChild(doc.createTextNode(world.toString()));
+
+
+    // text-based visualisation, disabled
+    //this.pre = node.appendChild(doc.createElement("pre"));
+    //this.pre.appendChild(doc.createTextNode(world.toString()));
+
+    //image-based visualisation
+      this.visualisation = node.appendChild(doc.createElement("div"));
+      for(var i =0; i< this.world.grid.height; i++){
+          for(var j=0; j< this.world.grid.width; j++){
+            this.visualisation.appendChild(doc.createElement('div'));
+          }
+          var endl = doc.createElement('div');
+          endl.style.cssText='clear:both;';
+          this.visualisation.appendChild(endl);
+      }
+
     this.button = node.appendChild(doc.createElement("div"));
     this.button.style.cssText = "color: white;" +
       "background: #4ab; cursor: pointer; border-radius: 18px; font-size: 70%; width: 3.5em; text-align: center;";
@@ -74,8 +89,21 @@
           this.carnivoresExtinct = true;
     }
 
-    this.pre.removeChild(this.pre.firstChild);
-    this.pre.appendChild(this.pre.ownerDocument.createTextNode(mapStr));
+      for(var x in mapStr){
+          if( mapStr[x] == ' ')
+              this.visualisation.childNodes[x].className = "tile field";
+          else if( mapStr[x] == '#')
+              this.visualisation.childNodes[x].className = "tile rocks";
+          else if( mapStr[x] == '*')
+              this.visualisation.childNodes[x].className = "tile plants";
+          else if( mapStr[x] == 'O')
+              this.visualisation.childNodes[x].className = "tile rabbit";
+          else if( mapStr[x] == '@')
+              this.visualisation.childNodes[x].className = "tile tiger";
+      }
+    //text-based visualisation, disabled
+    //this.pre.removeChild(this.pre.firstChild);
+    //this.pre.appendChild(this.pre.ownerDocument.createTextNode(mapStr));
 
     var self = this;
     this.interval = setTimeout(function() { self.tick(); }, (11 - this.slider.value) * 60 || 333);
