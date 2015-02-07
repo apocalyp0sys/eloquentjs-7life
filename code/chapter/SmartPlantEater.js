@@ -18,14 +18,13 @@ SmartPlantEater.prototype.act = function(context) {
         return {type: "move", direction: fromTiger};
     }
 
-    var plant = context.find("*");
-    if (plant) {
-        // not greedy feeding; helps to stabilize the population
-        if(this.energy < 10 || this.energy * Math.random() < 40)
-          return {type: "eat", direction: plant};
-        // do not abandon food sources even if not hungry
-        else
-          return {type: "idle"};
+    var plants = context.findAll("*");
+    if (plants.length > 1)
+        return {type: "eat", direction: randomElement(plants)}
+    else if(plants.length == 1){
+        if(this.energy < 5 )
+            return {type: "eat", direction: plants[0]}
+
     }
     if (context.look(this.direction) != " " && space)
         this.direction = space;
